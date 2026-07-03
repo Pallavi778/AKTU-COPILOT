@@ -23,7 +23,7 @@ const PYQRepository = () => {
   const [search, setSearch] = useState('');
   const [semester, setSemester] = useState('');
   const [year, setYear] = useState('');
-
+  
   // ---------------- FETCH ----------------
   const fetchPYQs = useCallback(async () => {
     setLoading(true);
@@ -35,19 +35,34 @@ const PYQRepository = () => {
       if (search) params.search = search;
       if (semester) params.semester = semester;
       if (year) params.year = year;
-
+      console.log("Fetching with params:", params);
       const res = await pyqService.getPYQs(params);
+      console.log("API Response:", res.data);
+console.log("PYQs:", res.data.data.pyqs);
 
       // FIXED SAFE PARSING (your backend returns data.data)
       const list =
         res?.data?.data?.pyqs ||
         res?.data?.data ||
         [];
+        // Automatically switch semester only if all results belong to the same semester
+if (search && list.length > 0) {
+  const semesters = [...new Set(list.map(p => p.semester))];
 
+  if (semesters.length === 1 && semester !== semesters[0]) {
+    setSemester(semesters[0]);
+  }
+}
+console.log("First paper:", list[0]);
       setPyqs(list);
+      console.log("List length:", list.length);
     } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to load PYQs');
-    } finally {
+  console.error("FULL ERROR:", err);
+  console.error(err.response);
+  console.error(err.message);
+
+  setError(err?.response?.data?.message || err.message);
+}finally {
       setLoading(false);
     }
   }, [search, semester, year]);
@@ -141,6 +156,7 @@ const handleDownload = (pyq) => {
       )}
 
       {/* GRID */}
+      <p>Total papers: {pyqs.length}</p>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 
         {pyqs.map((pyq) => (

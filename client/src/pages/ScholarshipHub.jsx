@@ -46,12 +46,15 @@ const ScholarshipHub = () => {
   }, [search, eligibility]);
 
   // Calculate days remaining till deadline
-  const getDaysRemaining = (dateStr) => {
-    const target = new Date(dateStr);
-    const today = new Date();
-    const diff = target - today;
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    return days > 0 ? `${days} days left` : 'Deadline passed';
+  // const getDaysRemaining = (dateStr) => {
+  //   const target = new Date(dateStr);
+  //   const today = new Date();
+  //   const diff = target - today;
+  //   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  //   return days > 0 ? `${days} days left` : 'Deadline passed';
+  // };
+  const getDaysRemaining = () => {
+  return "Check official website for deadline";
   };
 
   const getDaysBadgeColor = (daysStr) => {
@@ -139,12 +142,12 @@ const ScholarshipHub = () => {
                   <div className="flex items-center justify-between">
                     <span className={`px-2.5 py-0.5 rounded text-[9px] font-bold uppercase flex items-center ${getDaysBadgeColor(daysLeftStr)}`}>
                       <Clock className="w-3 h-3 mr-1" />
-                      <span>{daysLeftStr}</span>
+                      <span>Check details on official site</span>
                     </span>
-                    <span className="text-[10px] text-slate-500 font-bold flex items-center">
-                      <Calendar className="w-3.5 h-3.5 mr-1" />
-                      <span>Deadline: {new Date(sch.lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                    </span>
+                      <span className="text-[10px] text-slate-500">
+  Visit official portal for deadline
+</span>
+                    
                   </div>
 
                   <h3 className="font-extrabold text-slate-200 text-sm tracking-tight">
