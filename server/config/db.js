@@ -7,7 +7,8 @@ const connectDB = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/aktu-copilot', {
       serverSelectionTimeoutMS: 3000 // Timeout in 3 seconds to avoid blocking startup
     });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`MongoDB Host: ${conn.connection.host}`);
+console.log(`MongoDB Database: ${conn.connection.name}`);
     isConnected = true;
   } catch (error) {
     console.error(`MongoDB Connection Failed: ${error.message}`);

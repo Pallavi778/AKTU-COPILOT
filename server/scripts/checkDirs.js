@@ -1,24 +1,23 @@
 require("dotenv").config();
-const cloudinary = require("cloudinary").v2;
+const mongoose = require("mongoose");
+const Pyq = require("../models/Pyq");
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+async function deleteUnknownPapers() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-async function check() {
-  const result = await cloudinary.search
-    .expression("resource_type:raw")
-    .max_results(50)
-    .execute();
+    const result = await Pyq.deleteMany({
+      subjectCode: "UNKNOWN",
+      title: /Unknown$/i
+    });
 
-  result.resources.forEach((file) => {
-    console.log("-------------------");
-    console.log("Filename:", file.filename);
-    console.log("Public ID:", file.public_id);
-    console.log("URL:", file.secure_url);
-  });
+    console.log(`✅ Deleted ${result.deletedCount} placeholder papers.`);
+
+    await mongoose.disconnect();
+  } catch (err) {
+    console.error(err);
+    await mongoose.disconnect();
+  }
 }
 
-check();
+deleteUnknownPapers();

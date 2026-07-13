@@ -3,20 +3,15 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import {
   LayoutDashboard,
-  MessageSquare,
   FileText,
   BarChart3,
   BookOpen,
-  GraduationCap,
-  Calendar,
   Award,
-  Bell,
   User,
   LogOut,
   Menu,
   X,
-  Sparkles,
-  BookMarked
+  Sparkles
 } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -29,19 +24,14 @@ const DashboardLayout = () => {
     logout();
     navigate('/login');
   };
-
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'AI Assistant', path: '/ai-assistant', icon: MessageSquare, badge: 'AI' },
-    { name: 'PYQ Repository', path: '/pyqs', icon: FileText },
-    { name: 'PYQ Analytics', path: '/pyq-analytics', icon: BarChart3, badge: 'Predict' },
-    { name: 'Notes Repository', path: '/notes', icon: BookOpen },
-    { name: 'Viva Preparation', path: '/viva', icon: GraduationCap },
-    { name: 'Study Planner', path: '/planner', icon: Calendar },
-    { name: 'Scholarship Hub', path: '/scholarships', icon: Award },
-    { name: 'Notice Tracker', path: '/notices', icon: Bell },
-    { name: 'Profile', path: '/profile', icon: User },
-  ];
+const navItems = [
+  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+  { name: 'AI Predictor', path: '/predictor', icon: Sparkles,badge: 'AI' },
+  { name: 'PYQ Repository', path: '/pyqs', icon: FileText },
+  { name: 'Study Resources', path: '/notes', icon: BookOpen },
+  { name: 'Scholarship Hub', path: '/scholarships', icon: Award },
+  { name: 'Profile', path: '/profile', icon: User },
+];
 
   // Helper to map route path to readable name
   const getPageTitle = () => {
@@ -52,7 +42,7 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen bg-slate-950 flex">
       {/* SIDEBAR FOR DESKTOP */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-72 bg-slate-900 border-r border-slate-800 flex-shrink-0">
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0">
         {/* Brand Logo */}
         <div className="h-20 flex items-center px-6 border-b border-slate-800 space-x-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
@@ -60,9 +50,9 @@ const DashboardLayout = () => {
           </div>
           <div>
             <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-primary-400">
-              AKTU Copilot
+              AKTU AI Academic Assistant
             </h1>
-            <span className="text-xs text-slate-500 font-medium tracking-wide">ACADEMIC ASSISTANT</span>
+            <span className="text-xs text-slate-500 font-medium tracking-wide">AKTU STUDY PORTAL</span>
           </div>
         </div>
 
@@ -220,8 +210,8 @@ const DashboardLayout = () => {
 
           <div className="flex items-center space-x-4">
             <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs text-slate-400 font-medium">Academic Session</span>
-              <span className="text-xs text-primary-400 font-semibold">2025-2026 (Even Sem)</span>
+              <span className="text-xs text-slate-400 font-medium">AKTU STUDY PORTAL</span>
+              <span className="text-xs text-primary-400 font-semibold">Semester {user?.semester}</span>
             </div>
             <div className="h-8 w-px bg-slate-800 hidden sm:block"></div>
             <div className="flex items-center space-x-3">

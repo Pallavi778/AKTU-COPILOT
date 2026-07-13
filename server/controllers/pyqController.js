@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');                          // ✅ ADD THIS LINE
-const PYQ = require('../models/PYQ');
+const PYQ = require('../models/Pyq');
 const Subject = require('../models/Subject');
 
 // ---------------- FILE UPLOAD CONFIG ----------------
@@ -33,25 +33,36 @@ const getPYQs = async (req, res) => {
     const { semester, year, search } = req.query;
     let filter = {};
 
-    if (semester) filter.semester = Number(semester);
-    if (year) filter.year = Number(year);
-    if (search) {
+    // Only apply semester/year filters when NOT searching
+    if (!search) {
+      if (semester) filter.semester = semester.toString();
+      if (year) filter.year = year.toString();
+    } else {
+      if (year) filter.year = year.toString();
+
       filter.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { subject: { $regex: search, $options: 'i' } },
+        { title: { $regex: search, $options: "i" } },
+        { subjectCode: { $regex: search, $options: "i" } },
       ];
     }
 
-    const pyqs = await PYQ.find(filter)
-      .populate('subject')
-      .sort({ createdAt: -1 });
+    const pyqs = await PYQ.find(filter).sort({ createdAt: -1 });
 
-    return res.json({ success: true, count: pyqs.length, data: { pyqs } });
+    return res.json({
+      success: true,
+      count: pyqs.length,
+      data: {
+        pyqs,
+      },
+    });
+
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
-
 // ---------------- CREATE PYQ ----------------
 const createPYQ = async (req, res) => {
   try {

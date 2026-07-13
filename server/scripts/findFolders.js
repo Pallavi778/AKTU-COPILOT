@@ -1,19 +1,31 @@
-const axios = require("axios");
+require("dotenv").config();
+const mongoose = require("mongoose");
+const Paper = require("../models/Pyq"); // Change to your model name/path
 
-async function test() {
-  const { data } = await axios.get(
-    "https://www.abesit.in/library/question-paper-bank/?dir=18721"
-  );
+async function countUnknownPapers() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI); // Use your env variable
 
-  const matches = data.match(/admin-ajax\.php/g);
+    const papers = await Paper.find({
+    $or: [
+        { subjectCode: "UNKNOWN" },
+        { title: /unknown/i }
+    ]
+}).select("title semester year subjectCode subject");
 
-  console.log("admin-ajax matches:", matches?.length || 0);
+    console.log(`\nFound ${papers.length} UNKNOWN papers:\n`);
 
-  const idx = data.indexOf("admin-ajax");
+    papers.forEach((paper, index) => {
+      console.log(
+        `${index + 1}. ${paper.title} | Sem ${paper.semester} | ${paper.year}`
+      );
+    });
 
-  if (idx !== -1) {
-    console.log(data.substring(idx - 500, idx + 1500));
+    await mongoose.disconnect();
+  } catch (err) {
+    console.error(err);
+    await mongoose.disconnect();
   }
 }
 
-test();
+countUnknownPapers();

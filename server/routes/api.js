@@ -8,7 +8,7 @@ const subjectController = require('../controllers/subjectController');
 const pyqController = require('../controllers/pyqController');
 const notesController = require('../controllers/notesController');
 const scholarshipController = require('../controllers/scholarshipController');
-const noticeController = require('../controllers/noticeController');
+// const noticeController = require('../controllers/noticeController');
 const aiController = require('../controllers/aiController');
 
 // Auth Routes
@@ -34,8 +34,8 @@ router.get('/scholarships', scholarshipController.getScholarships);
 router.post('/scholarships', protect, scholarshipController.createScholarship);
 
 // Notice Routes
-router.get('/notices', noticeController.getNotices);
-router.post('/notices', protect, noticeController.createNotice);
+// router.get('/notices', noticeController.getNotices);
+// router.post('/notices', protect, noticeController.createNotice);
 
 // AI & Analytics Placeholder Routes
 router.post('/ai/chat', protect, aiController.chat);

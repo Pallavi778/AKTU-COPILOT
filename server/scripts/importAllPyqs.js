@@ -647,7 +647,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const Subject = require("../models/Subject");
-const PYQ = require("../models/PYQ");
+const PYQ = require("../models/PyqModel");
 
 /**
  * =========================================================================

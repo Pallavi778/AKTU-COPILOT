@@ -77,11 +77,11 @@ const runSeeder = async () => {
     await Subject.deleteMany();
     await PYQ.deleteMany();
     await Notes.deleteMany();
-    await Scholarship.deleteMany();
+    // await Scholarship.deleteMany();
     await Notice.deleteMany();
     console.log('Existing DB collections wiped clean.');
 
-    // 4. Seed Subjects
+    // Seed Subjects
     const subjectsList = [
       { name: 'Data Structures', code: 'KCS301', semester: 3, branch: 'Computer Science' },
       { name: 'Computer Organization & Architecture', code: 'KCS302', semester: 3, branch: 'Computer Science' },
@@ -156,21 +156,29 @@ const runSeeder = async () => {
       {
         title: 'UP Post-Matric Scholarship Scheme 2026',
         eligibility: 'AKTU enrolled students, UP domicile, Family income < Rs. 2.5 LPA (SC/ST) or < Rs. 2.0 LPA (General/OBC/Minority)',
-        lastDate: new Date('2026-10-31'),
+        note: 'Check official website for latest deadline and updates',
         applicationLink: 'https://scholarship.up.gov.in',
       },
       {
         title: 'National Scholarship Portal (NSP) - Central Sector Scheme',
         eligibility: 'Top 20th percentile college students, standard graduate course, family income < Rs. 4.5 LPA',
-        lastDate: new Date('2026-11-15'),
+        note: 'Check official website for latest deadline and updates',
         applicationLink: 'https://scholarships.gov.in',
       },
       {
         title: 'Pragati Scholarship Scheme for Girl Students',
         eligibility: 'Female students admitted to B.Tech 1st year (or lateral entry), family income < Rs. 8 LPA',
-        lastDate: new Date('2026-11-30'),
+        category: "Female",
+        note: 'Check official website for latest deadline and updates',
         applicationLink: 'https://scholarships.gov.in',
       },
+      {
+    title: "Saksham Scholarship (AICTE)",
+    eligibility:
+      "Specially-abled students, family income < 8 LPA, BTech/Diploma",
+    note: 'Check official website for latest deadline and updates',
+    applicationLink: "https://www.aicte-saksham-gov.in/",
+  },
     ];
     const seededScholarships = await Scholarship.insertMany(scholarshipsList);
     console.log(`Successfully seeded ${seededScholarships.length} scholarships.`);
