@@ -28,7 +28,7 @@ const navItems = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
   { name: 'AI Predictor', path: '/predictor', icon: Sparkles,badge: 'AI' },
   { name: 'PYQ Repository', path: '/pyqs', icon: FileText },
-  { name: 'Study Resources', path: '/notes', icon: BookOpen },
+  // { name: 'Study Resources', path: '/notes', icon: BookOpen },
   { name: 'Scholarship Hub', path: '/scholarships', icon: Award },
   { name: 'Profile', path: '/profile', icon: User },
 ];

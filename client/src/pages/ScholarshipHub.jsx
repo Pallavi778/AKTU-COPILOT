@@ -1,40 +1,227 @@
-import React, { useEffect, useState } from 'react';
-import API from '../services/api';
+// import React, { useEffect, useState } from 'react';
+// import API from '../services/api';
+// import {
+//   Search,
+//   Award,
+//   Calendar,
+//   AlertCircle,
+//   ExternalLink,
+//   Info,
+//   Clock
+// } from 'lucide-react';
+
+// const ScholarshipHub = () => {
+//   const [scholarships, setScholarships] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+
+//   // Filters
+//   const [search, setSearch] = useState('');
+//   const [eligibility, setEligibility] = useState('All');
+
+//   const fetchScholarships = async () => {
+//     try {
+//       setLoading(true);
+//       setError(null);
+
+//       let query = `?search=${search}`;
+//       if (eligibility !== 'All') {
+//         query += `&eligibility=${eligibility}`;
+//       }
+
+//       const { data } = await API.get(`/scholarships${query}`);
+//       if (data.success) {
+//         setScholarships(data.data);
+//       }
+//     } catch (err) {
+//       setError('Could not retrieve scholarship list. Please try again.');
+//       console.error(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchScholarships();
+//   }, [search, eligibility]);
+
+//   // Calculate days remaining till deadline
+//   // const getDaysRemaining = (dateStr) => {
+//   //   const target = new Date(dateStr);
+//   //   const today = new Date();
+//   //   const diff = target - today;
+//   //   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+//   //   return days > 0 ? `${days} days left` : 'Deadline passed';
+//   // };
+//   const getDaysRemaining = () => {
+//   return "Check official website for deadline";
+//   };
+
+//   const getDaysBadgeColor = (daysStr) => {
+//     if (daysStr.includes('passed')) return 'bg-red-500/10 text-red-400 border border-red-500/20';
+//     const num = parseInt(daysStr);
+//     if (num < 15) return 'bg-rose-500/15 text-rose-400 border border-rose-500/20 animate-pulse';
+//     return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+//   };
+
+//   const eligibilityOptions = [
+//     { label: 'All Eligibility Groups', value: 'All' },
+//     { label: 'SC / ST Category', value: 'SC/ST' },
+//     { label: 'OBC Category', value: 'OBC' },
+//     { label: 'General / Minority', value: 'General' },
+//     { label: 'Female Students Only', value: 'Female' },
+//   ];
+
+//   return (
+//     <div className="space-y-6 animate-fade-in">
+//       {/* Title Header */}
+//       <div>
+//         <p className="text-xs text-primary-400 font-semibold uppercase tracking-wider font-sans">Financial Aid & Scholarship Tracker</p>
+//         <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-100 flex items-center space-x-2">
+//           <Award className="w-8 h-8 text-primary-500" />
+//           <span>Scholarship Hub</span>
+//         </h1>
+//       </div>
+
+//       {/* Filters */}
+//       <div className="glass-panel rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between">
+//         <div className="relative w-full md:w-80">
+//           <input
+//             type="text"
+//             value={search}
+//             onChange={(e) => setSearch(e.target.value)}
+//             className="w-full bg-slate-950/40 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary-500 text-slate-200 placeholder-slate-650"
+//             placeholder="Search scholarships (e.g. Pragati)..."
+//           />
+//           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
+//         </div>
+
+//         <div className="flex items-center space-x-3 w-full md:w-auto justify-end">
+//           <span className="text-xs text-slate-400 font-semibold hidden sm:inline">Eligibility:</span>
+//           <select
+//             value={eligibility}
+//             onChange={(e) => setEligibility(e.target.value)}
+//             className="w-full sm:w-56 bg-slate-900 border border-slate-800 text-slate-350 text-xs rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
+//           >
+//             {eligibilityOptions.map(opt => (
+//               <option key={opt.value} value={opt.value}>{opt.label}</option>
+//             ))}
+//           </select>
+//         </div>
+//       </div>
+
+//       {error && (
+//         <div className="p-4 bg-red-950/30 border border-red-900/40 rounded-xl flex items-center space-x-3 text-red-400 text-sm">
+//           <AlertCircle className="w-5 h-5 flex-shrink-0" />
+//           <span>{error}</span>
+//         </div>
+//       )}
+
+//       {loading ? (
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {[1, 2].map(n => (
+//             <div key={n} className="glass-panel p-6 h-56 skeleton rounded-3xl"></div>
+//           ))}
+//         </div>
+//       ) : scholarships.length === 0 ? (
+//         <div className="glass-panel p-12 text-center rounded-3xl space-y-3">
+//           <Award className="w-12 h-12 text-slate-600 mx-auto" />
+//           <h2 className="text-lg font-bold text-slate-400">No active scholarship programs found</h2>
+//           <p className="text-slate-500 text-xs max-w-sm mx-auto">Try matching other eligibility category tags or search terms.</p>
+//         </div>
+//       ) : (
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {scholarships.map((sch) => {
+//             const daysLeftStr = getDaysRemaining(sch.lastDate);
+//             return (
+//               <div
+//                 key={sch._id}
+//                 className="glass-card p-6 rounded-2xl flex flex-col justify-between space-y-5 hover:translate-y-[-2px] hover:shadow-2xl transition-all"
+//               >
+//                 <div className="space-y-3">
+//                   <div className="flex items-center justify-between">
+//                     <span className={`px-2.5 py-0.5 rounded text-[9px] font-bold uppercase flex items-center ${getDaysBadgeColor(daysLeftStr)}`}>
+//                       <Clock className="w-3 h-3 mr-1" />
+//                       <span>Check details on official site</span>
+//                     </span>
+//                       <span className="text-[10px] text-slate-500">
+//   Visit official portal for deadline
+// </span>
+                    
+//                   </div>
+
+//                   <h3 className="font-extrabold text-slate-200 text-sm tracking-tight">
+//                     {sch.title}
+//                   </h3>
+
+//                   <div className="p-3 bg-slate-950/40 border border-slate-850 rounded-xl space-y-1.5">
+//                     <span className="text-[10px] font-bold text-slate-500 uppercase flex items-center">
+//                       <Info className="w-3.5 h-3.5 text-primary-400 mr-1" />
+//                       <span>Eligibility Criteria</span>
+//                     </span>
+//                     <p className="text-xs text-slate-450 leading-relaxed font-medium">
+//                       {sch.eligibility}
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 <div className="pt-4 border-t border-slate-800/60 flex items-center justify-end">
+//                   <a
+//                     href={sch.applicationLink}
+//                     target="_blank"
+//                     rel="noopener noreferrer"
+//                     className="glass-button-primary flex items-center space-x-1.5 text-xs px-4 py-2 bg-gradient-to-r"
+//                   >
+//                     <span>Apply Now</span>
+//                     <ExternalLink className="w-3.5 h-3.5" />
+//                   </a>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ScholarshipHub;
+
+import React, { useEffect, useState } from "react";
+import API from "../services/api";
 import {
   Search,
   Award,
-  Calendar,
   AlertCircle,
   ExternalLink,
   Info,
-  Clock
-} from 'lucide-react';
+  Clock,
+} from "lucide-react";
 
 const ScholarshipHub = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filters
-  const [search, setSearch] = useState('');
-  const [eligibility, setEligibility] = useState('All');
+  // Search
+  const [search, setSearch] = useState("");
 
   const fetchScholarships = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      let query = `?search=${search}`;
-      if (eligibility !== 'All') {
-        query += `&eligibility=${eligibility}`;
-      }
+      const query = `?search=${search}`;
 
       const { data } = await API.get(`/scholarships${query}`);
+
       if (data.success) {
         setScholarships(data.data);
       }
     } catch (err) {
-      setError('Could not retrieve scholarship list. Please try again.');
+      setError(
+        "Could not retrieve scholarship list. Please try again."
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -43,129 +230,186 @@ const ScholarshipHub = () => {
 
   useEffect(() => {
     fetchScholarships();
-  }, [search, eligibility]);
+  }, [search]);
 
-  // Calculate days remaining till deadline
-  // const getDaysRemaining = (dateStr) => {
-  //   const target = new Date(dateStr);
-  //   const today = new Date();
-  //   const diff = target - today;
-  //   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  //   return days > 0 ? `${days} days left` : 'Deadline passed';
-  // };
+  // Deadline information
   const getDaysRemaining = () => {
-  return "Check official website for deadline";
+    return "Check official website for deadline";
   };
 
   const getDaysBadgeColor = (daysStr) => {
-    if (daysStr.includes('passed')) return 'bg-red-500/10 text-red-400 border border-red-500/20';
+    if (daysStr.includes("passed")) {
+      return "bg-red-500/10 text-red-400 border border-red-500/20";
+    }
+
     const num = parseInt(daysStr);
-    if (num < 15) return 'bg-rose-500/15 text-rose-400 border border-rose-500/20 animate-pulse';
-    return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+
+    if (num < 15) {
+      return "bg-rose-500/15 text-rose-400 border border-rose-500/20 animate-pulse";
+    }
+
+    return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
   };
 
-  const eligibilityOptions = [
-    { label: 'All Eligibility Groups', value: 'All' },
-    { label: 'SC / ST Category', value: 'SC/ST' },
-    { label: 'OBC Category', value: 'OBC' },
-    { label: 'General / Minority', value: 'General' },
-    { label: 'Female Students Only', value: 'Female' },
-  ];
-
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Title Header */}
+      <div className="max-w-7xl mx-auto px-6 md:px-8 pt-2 pb-8 space-y-8">
+
+      {/* ===================== */}
+      {/* PAGE HEADER */}
+      {/* ===================== */}
+
       <div>
-        <p className="text-xs text-primary-400 font-semibold uppercase tracking-wider font-sans">Financial Aid & Scholarship Tracker</p>
-        <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-100 flex items-center space-x-2">
-          <Award className="w-8 h-8 text-primary-500" />
-          <span>Scholarship Hub</span>
+        <p className="text-sm text-primary-400 font-semibold mb-2">
+          Financial Aid & Scholarship Tracker
+        </p>
+
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-100">
+          Scholarship Hub
         </h1>
+
+        <p className="text-sm text-slate-400 mt-2 max-w-2xl">
+          Discover scholarship opportunities and check eligibility
+          requirements through official application portals.
+        </p>
       </div>
 
-      {/* Filters */}
-      <div className="glass-panel rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full md:w-80">
+      {/* ===================== */}
+      {/* SEARCH */}
+      {/* ===================== */}
+
+      <div className="glass-panel rounded-2xl p-5">
+        <div className="relative w-full md:w-[500px]">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-950/40 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary-500 text-slate-200 placeholder-slate-650"
+            className="w-full bg-slate-950/40 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-slate-200 placeholder-slate-600"
             placeholder="Search scholarships (e.g. Pragati)..."
           />
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-600" />
-        </div>
 
-        <div className="flex items-center space-x-3 w-full md:w-auto justify-end">
-          <span className="text-xs text-slate-400 font-semibold hidden sm:inline">Eligibility:</span>
-          <select
-            value={eligibility}
-            onChange={(e) => setEligibility(e.target.value)}
-            className="w-full sm:w-56 bg-slate-900 border border-slate-800 text-slate-350 text-xs rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
-          >
-            {eligibilityOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+          <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-600" />
         </div>
       </div>
+
+      {/* ===================== */}
+      {/* ERROR */}
+      {/* ===================== */}
 
       {error && (
         <div className="p-4 bg-red-950/30 border border-red-900/40 rounded-xl flex items-center space-x-3 text-red-400 text-sm">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
+
           <span>{error}</span>
         </div>
       )}
 
+      {/* ===================== */}
+      {/* LOADING */}
+      {/* ===================== */}
+
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2].map(n => (
-            <div key={n} className="glass-panel p-6 h-56 skeleton rounded-3xl"></div>
+          {[1, 2].map((n) => (
+            <div
+              key={n}
+              className="glass-panel p-6 h-56 skeleton rounded-3xl"
+            ></div>
           ))}
         </div>
       ) : scholarships.length === 0 ? (
+
+        /* ===================== */
+        /* EMPTY STATE */
+        /* ===================== */
+
         <div className="glass-panel p-12 text-center rounded-3xl space-y-3">
           <Award className="w-12 h-12 text-slate-600 mx-auto" />
-          <h2 className="text-lg font-bold text-slate-400">No active scholarship programs found</h2>
-          <p className="text-slate-500 text-xs max-w-sm mx-auto">Try matching other eligibility category tags or search terms.</p>
+
+          <h2 className="text-lg font-bold text-slate-400">
+            No scholarships found
+          </h2>
+
+          <p className="text-slate-500 text-xs max-w-sm mx-auto">
+            Try searching with a different scholarship name or keyword.
+          </p>
         </div>
+
       ) : (
+
+        /* ===================== */
+        /* SCHOLARSHIP CARDS */
+        /* ===================== */
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           {scholarships.map((sch) => {
-            const daysLeftStr = getDaysRemaining(sch.lastDate);
+
+            const daysLeftStr = getDaysRemaining(
+              sch.lastDate
+            );
+
             return (
               <div
                 key={sch._id}
-                className="glass-card p-6 rounded-2xl flex flex-col justify-between space-y-5 hover:translate-y-[-2px] hover:shadow-2xl transition-all"
+                className="glass-card p-6 rounded-2xl flex flex-col justify-between space-y-5 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2.5 py-0.5 rounded text-[9px] font-bold uppercase flex items-center ${getDaysBadgeColor(daysLeftStr)}`}>
+
+                {/* TOP CONTENT */}
+
+                <div className="space-y-4">
+
+                  {/* BADGE */}
+
+                  <div className="flex items-center justify-between gap-3">
+
+                    <span
+                      className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase flex items-center ${getDaysBadgeColor(
+                        daysLeftStr
+                      )}`}
+                    >
                       <Clock className="w-3 h-3 mr-1" />
-                      <span>Check details on official site</span>
+
+                      <span>
+                        Check official website for Deadlines
+                      </span>
                     </span>
-                      <span className="text-[10px] text-slate-500">
-  Visit official portal for deadline
-</span>
-                    
+
+                    <span className="text-[10px] text-slate-500 whitespace-nowrap">
+                      Visit official portal
+                    </span>
+
                   </div>
 
-                  <h3 className="font-extrabold text-slate-200 text-sm tracking-tight">
+                  {/* TITLE */}
+
+                  <h3 className="font-extrabold text-slate-200 text-base tracking-tight">
                     {sch.title}
                   </h3>
 
-                  <div className="p-3 bg-slate-950/40 border border-slate-850 rounded-xl space-y-1.5">
+                  {/* ELIGIBILITY */}
+
+                  <div className="p-4 bg-slate-950/40 border border-slate-800 rounded-xl space-y-2">
+
                     <span className="text-[10px] font-bold text-slate-500 uppercase flex items-center">
-                      <Info className="w-3.5 h-3.5 text-primary-400 mr-1" />
-                      <span>Eligibility Criteria</span>
+                      <Info className="w-3.5 h-3.5 text-primary-400 mr-1.5" />
+
+                      <span>
+                        Eligibility Criteria
+                      </span>
                     </span>
-                    <p className="text-xs text-slate-450 leading-relaxed font-medium">
+
+                    <p className="text-xs text-slate-400 leading-relaxed font-medium">
                       {sch.eligibility}
                     </p>
+
                   </div>
+
                 </div>
 
+                {/* FOOTER */}
+
                 <div className="pt-4 border-t border-slate-800/60 flex items-center justify-end">
+
                   <a
                     href={sch.applicationLink}
                     target="_blank"
@@ -173,12 +417,16 @@ const ScholarshipHub = () => {
                     className="glass-button-primary flex items-center space-x-1.5 text-xs px-4 py-2 bg-gradient-to-r"
                   >
                     <span>Apply Now</span>
+
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
+
                 </div>
+
               </div>
             );
           })}
+
         </div>
       )}
     </div>

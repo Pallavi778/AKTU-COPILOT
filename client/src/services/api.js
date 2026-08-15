@@ -41,7 +41,7 @@ import axios from 'axios';
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  timeout: 15000,
+  timeout: 120000,
 });
 
 API.interceptors.request.use(
@@ -91,5 +91,13 @@ export const pyqService = {
 
   recordDownload: (id) => API.post(`/pyqs/${id}/download`),
 };
+// AI PREDICTOR
+// =======================
 
+export const aiService = {
+  predict: (subject_name) =>
+    API.post("/ai/predict", {
+      subject_name,
+    }),
+};
 export default API;

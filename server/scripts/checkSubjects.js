@@ -1,73 +1,53 @@
-require("dotenv").config({ path: __dirname + "/../.env" });
+require("dotenv").config();
 const mongoose = require("mongoose");
-const PYQ = require("../models/PYQ");
+const cloudinary = require("../config/cloudinary");
+const Pyq = require("../models/Pyq");
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log("Connected");
+mongoose.connect(process.env.MONGO_URI);
 
-    const docs = await PYQ.find();
-    let updated = 0;
+async function fixUrls() {
+    try {
+        // const papers = await Pyq.find();
+        const papers = await Pyq.find().limit(5);
 
-    for (let doc of docs) {
+        console.log(`Found ${papers.length} papers`);
 
-      let raw = doc.fileName;
+        let updated = 0;
 
-      // fallback: extract from URL if fileName missing
-      if (!raw && doc.fileUrl) {
-        const parts = doc.fileUrl.split("/");
-        raw = parts[parts.length - 1].split(".")[0];
-      }
+        for (const paper of papers) {
 
-      if (!raw) {
-        console.log("Skipping invalid doc:", doc._id);
-        continue;
-      }
+            try {
 
-      // extract year
-      const yearMatch = raw.match(/\d{4}/);
-      const year = yearMatch ? Number(yearMatch[0]) : null;
+                const result = await cloudinary.api.resource(
+                    paper.publicId,
+                    {
+                        resource_type: "raw"
+                    }
+                );
 
-      // clean name
-      let cleaned = raw
-        .replace(/^\d{4}-/, "")
-        .replace(/\.(pdf|PDF)$/, "")
-        .replace(/-/g, " ")
-        .trim();
+                paper.fileUrl = result.secure_url;
 
-      const parts = cleaned.split(" ");
+                await paper.save();
 
-      const subjectCode = parts.length > 1 ? parts.pop() : "UNKNOWN";
-      let subjectName = parts.join(" ").trim();
+                updated++;
 
-      // extra cleanup for better readability
-      subjectName = subjectName
-        .replace(/\bBCS|BEC|BME|BNC|NCS|NEC|NEE|NCE\b/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+                console.log(`${updated}. Updated ${paper.title}`);
 
-      const displayName = `${subjectName} (${subjectCode}) - ${year || "Unknown"}`;
+            } catch (err) {
 
-      await PYQ.updateOne(
-        { _id: doc._id },
-        {
-          $set: {
-            subjectName,
-            subjectCode,
-            year,
-            displayName,
-            searchText: `${subjectName} ${subjectCode} ${year} ${cleaned}`
-          }
+                console.log(`Couldn't find ${paper.publicId}`);
+
+            }
+
         }
-      );
 
-      updated++;
-      console.log("Updated:", doc._id);
+        console.log("Done!");
+
+    } catch (err) {
+        console.error(err);
     }
 
-    console.log(`\nMigration done. Total updated: ${updated}`);
-    process.exit();
-  })
-  .catch(err => {
-    console.log("Error:", err);
-  });
+    mongoose.disconnect();
+}
+
+fixUrls();

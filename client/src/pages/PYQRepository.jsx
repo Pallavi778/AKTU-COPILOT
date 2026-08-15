@@ -10,7 +10,16 @@ const pyqService = {
   getPYQs: (params) => API.get('/pyqs', { params }),
   deletePYQ: (id) => API.delete(`/pyqs/${id}`),
 };
-
+const AVAILABLE_YEARS = {
+  1: [2022, 2023, 2024, 2025],
+  2: [2023, 2024],
+  3: [2023, 2024, 2025],
+  4: [2024, 2025],
+  5: [2024, 2025],
+  6: [2025],
+  7: [2025],
+  8: [],
+};
 // ---------------- MAIN PAGE ----------------
 const PYQRepository = () => {
   const { user } = useAuth();
@@ -84,7 +93,9 @@ const handleDownload = (pyq) => {
     setSemester('');
     setYear('');
   };
-
+const availableYears = semester
+  ? AVAILABLE_YEARS[semester] || []
+  : [];
   // ---------------- UI ----------------
   return (
     <div className="space-y-6 max-w-6xl mx-auto p-4">
@@ -118,28 +129,37 @@ const handleDownload = (pyq) => {
 
         <select
   value={semester}
-  onChange={(e) => setSemester(e.target.value)}
+  onChange={(e) => {
+    setSemester(e.target.value);
+    setYear("");
+  }}
   className="px-3 py-2 border rounded-lg bg-slate-800 text-white border-slate-600"
 >
-          <option value="">All Semesters</option>
-          {[1,2,3,4,5,6,7,8].map((s) => (
-            <option key={s} value={s}>Semester {s}</option>
-          ))}
-        </select>
+  <option value="">All Semesters</option>
 
-        <select
+  {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+    <option key={s} value={s}>
+      Semester {s}
+    </option>
+  ))}
+</select>
+
+       <select
   value={year}
   onChange={(e) => setYear(e.target.value)}
-  className="px-3 py-2 border rounded-lg bg-slate-800 text-white border-slate-600"
+  disabled={!semester}
+  className="px-3 py-2 border rounded-lg bg-slate-800 text-white border-slate-600 disabled:opacity-50"
 >
-  <option value="">All Years</option>
-  {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017].map((y) => (
+  <option value="">
+    {semester ? "All Years" : "Select Semester First"}
+  </option>
+
+  {availableYears.map((y) => (
     <option key={y} value={y}>
       {y}
     </option>
   ))}
 </select>
-
       </div>
 
       {/* ERROR */}
@@ -180,8 +200,8 @@ const handleDownload = (pyq) => {
             {/* META */}
             <div className="flex gap-2 text-xs text-gray-600">
               <span>Sem {pyq.semester}</span>
-              <span>•</span>
               <span>{pyq.year}</span>
+              
             </div>
 
             {/* ACTIONS */}

@@ -1,12 +1,12 @@
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
-
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');                          // ✅ ADD THIS LINE
 const PYQ = require('../models/Pyq');
 const Subject = require('../models/Subject');
+const PYQ_MAPPING = require('../config/pyqMapping');
 
 // ---------------- FILE UPLOAD CONFIG ----------------
 const storage = new CloudinaryStorage({
@@ -28,35 +28,176 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // ---------------- GET PYQS ----------------
+// const getPYQs = async (req, res) => {
+//   try {
+//     const { semester, year, search } = req.query;
+//     let filter = {};
+
+//     // Only apply semester/year filters when NOT searching
+//     if (!search) {
+//       if (semester) filter.semester = semester.toString();
+//       if (year) filter.year = year.toString();
+//     } else {
+//       if (year) filter.year = year.toString();
+
+//       filter.$or = [
+//         { title: { $regex: search, $options: "i" } },
+//         { subjectCode: { $regex: search, $options: "i" } },
+//       ];
+//     }
+
+//     const pyqs = await PYQ.find(filter).sort({ createdAt: -1 });
+
+//     return res.json({
+//       success: true,
+//       count: pyqs.length,
+//       data: {
+//         pyqs,
+//       },
+//     });
+
+//   } catch (err) {
+//     return res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };
+// ---------------- GET PYQS ----------------
 const getPYQs = async (req, res) => {
   try {
     const { semester, year, search } = req.query;
+
     let filter = {};
 
-    // Only apply semester/year filters when NOT searching
-    if (!search) {
-      if (semester) filter.semester = semester.toString();
-      if (year) filter.year = year.toString();
-    } else {
-      if (year) filter.year = year.toString();
+    // --------------------------------------------------
+    // 1. SEMESTER FILTER
+    // --------------------------------------------------
+    if (semester) {
+      const semesterKey = semester.toString();
+      const semesterMapping = PYQ_MAPPING[semesterKey];
 
+      // Semester doesn't exist in our verified mapping
+      if (!semesterMapping) {
+        return res.json({
+          success: true,
+          count: 0,
+          data: {
+            pyqs: [],
+          },
+        });
+      }
+
+      // Get only the MongoDB years that contain
+      // verified/current-syllabus papers.
+      const validDbYears = Object.keys(semesterMapping);
+
+      // No valid papers for this semester
+      if (validDbYears.length === 0) {
+        return res.json({
+          success: true,
+          count: 0,
+          data: {
+            pyqs: [],
+          },
+        });
+      }
+
+      filter.semester = semesterKey;
+      filter.year = { $in: validDbYears };
+
+      // --------------------------------------------------
+      // 2. ACADEMIC YEAR FILTER
+      // --------------------------------------------------
+      // --------------------------------------------------
+// 2. YEAR FILTER
+// --------------------------------------------------
+if (year) {
+  const requestedYear = year.toString();
+
+  // The frontend sends the actual MongoDB year.
+  // Example:
+  // Sem 2 -> 2023
+  // Sem 2 -> 2024
+  // Sem 4 -> 2024
+  // Sem 4 -> 2025
+
+  const validDbYears = Object.keys(semesterMapping);
+
+  // Make sure the requested year is allowed
+  // for this semester.
+  if (!validDbYears.includes(requestedYear)) {
+    return res.json({
+      success: true,
+      count: 0,
+      data: {
+        pyqs: [],
+      },
+    });
+  }
+
+  filter.year = requestedYear;
+}
+    }
+
+    // --------------------------------------------------
+    // 3. SEARCH
+    // --------------------------------------------------
+    if (search) {
       filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { subjectCode: { $regex: search, $options: "i" } },
+        {
+          title: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          subjectCode: {
+            $regex: search,
+            $options: "i",
+          },
+        },
       ];
     }
 
-    const pyqs = await PYQ.find(filter).sort({ createdAt: -1 });
+    // --------------------------------------------------
+    // 4. FETCH PYQS
+    // --------------------------------------------------
+    const pyqs = await PYQ.find(filter)
+      .sort({ createdAt: -1 });
+
+    // --------------------------------------------------
+    // 5. ADD ACTUAL ACADEMIC YEAR
+    // --------------------------------------------------
+    const formattedPYQs = pyqs.map((pyq) => {
+      const pyqObject = pyq.toObject();
+
+      const semesterMapping =
+        PYQ_MAPPING[pyq.semester] || {};
+
+      return {
+        ...pyqObject,
+
+        // Original MongoDB year remains untouched
+        year: pyq.year,
+
+        // Actual year shown to the frontend
+        academicYear:
+          semesterMapping[pyq.year] || pyq.year,
+      };
+    });
 
     return res.json({
       success: true,
-      count: pyqs.length,
+      count: formattedPYQs.length,
       data: {
-        pyqs,
+        pyqs: formattedPYQs,
       },
     });
 
   } catch (err) {
+    console.error("getPYQs error:", err);
+
     return res.status(500).json({
       success: false,
       message: err.message,
