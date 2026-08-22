@@ -73,6 +73,14 @@ const Predictor = () => {
           </div>
 
         </div>
+        <div className="mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200">
+  <p className="text-sm text-amber-800">
+    ⚠️ <strong>Disclaimer:</strong> This prediction is AI-generated based on
+    patterns found in the available PYQs in our repository. It is intended
+    only as a study guide and does not guarantee the questions that will
+    appear in the actual examination.
+  </p>
+</div>
 
         <p className="
           text-slate-400

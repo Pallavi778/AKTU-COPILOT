@@ -1272,6 +1272,11 @@ const Dashboard = () => {
           </Link>
 
         </div>
+        <footer className="text-center py-6 mt-10 border-t border-slate-800">
+  <p className="text-sm text-slate-500">
+    Made by Pallavi Tripathi
+  </p>
+</footer>
 
       </section>
 

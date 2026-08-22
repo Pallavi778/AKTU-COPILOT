@@ -1,3 +1,5 @@
+// This file is creating fake/in-memory data for the application to use
+//  when the real database isn't available or when we need sample data.
 const mockSubjects = [
   { _id: 'sub_1', name: 'Data Structures', code: 'KCS301', semester: 3, branch: 'Computer Science' },
   { _id: 'sub_2', name: 'Computer Organization & Architecture', code: 'KCS302', semester: 3, branch: 'Computer Science' },

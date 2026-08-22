@@ -229,6 +229,7 @@ const navItems = [
             <Outlet />
           </div>
         </main>
+       
       </div>
     </div>
   );

@@ -18,42 +18,6 @@ import Predictor from "./pages/Predictor";
 import ScholarshipHub from './pages/ScholarshipHub';
 // import NoticeTracker from './pages/NoticeTracker';
 import Profile from './pages/Profile';
-
-// function App() {
-//   return (
-//     <AuthProvider>
-//       <Router>
-//         <Routes>
-//           {/* Public Auth Routes */}
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/register" element={<Register />} />
-
-//           {/* Protected Dashboard Routes */}
-//           <Route element={<ProtectedRoute />}>
-//             <Route element={<DashboardLayout />}>
-//               <Route path="/" element={<Dashboard />} />
-//                 <Route path="/ai-assistant" element={<AIAssistant />} />
-//               <Route path="/pyqs" element={<PYQRepository />} />
-//               <Route path="/pyq-analytics" element={<PYQAnalytics />} />
-//               <Route path="/notes" element={<NotesRepository />} />
-//               <Route path="/viva" element={<VivaPrep />} />
-//               <Route path="/planner" element={<StudyPlanner />} />
-//               <Route path="/scholarships" element={<ScholarshipHub />} />
-//               <Route path="/notices" element={<NoticeTracker />} />
-//               <Route path="/profile" element={<Profile />} />
-//             </Route>
-//           </Route>
-
-//           {/* Fallback Redirect */}
-//           <Route path="*" element={<Navigate to="/" replace />} />
-//         </Routes>
-//       </Router>
-//     </AuthProvider>
-//   );
-// }
-
-// export default App;
-
 function App() {
   return (
     <AuthProvider>
