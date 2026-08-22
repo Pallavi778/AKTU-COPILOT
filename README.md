@@ -1,62 +1,32 @@
-# 🎓 AKTU Academic Copilot
+# AKTU Academic Copilot
 
-AKTU Academic Copilot is a full-stack academic assistance platform designed specifically for students of Dr. A.P.J. Abdul Kalam Abdul Kalam Technical University (AKTU).
+AKTU Academic Copilot is a full-stack academic assistance platform made for AKTU engineering students.
 
-The platform brings important academic resources together in one place, including Previous Year Question Papers (PYQs), PYQ analytics, notes, scholarships, student profiles, and an AI-powered paper predictor.
+The main purpose of this project is to provide students with academic resources such as Previous Year Question Papers (PYQs), notes, scholarship information, PYQ analytics and an AI-based paper predictor in one place.
 
-## 🌐 Live Demo
+## Live Project
 
-🚀 **Live Project:** https://aktu-copilot.vercel.app
+https://aktu-copilot.vercel.app
 
----
+## Features
 
-## ✨ Features
+- User registration and login
+- Student profile with branch and semester details
+- Previous Year Question Paper repository
+- PYQ filtering based on semester, subject and year
+- PYQ analytics
+- Notes repository
+- Scholarship information
+- AI Paper Predictor
+- Responsive dashboard
 
-### 📚 PYQ Repository
+### AI Paper Predictor
 
-- Browse Previous Year Question Papers
-- Filter papers based on semester, subject, branch, and year
-- Access organized question paper resources
-- Helps students prepare using previous examination patterns
+The AI Predictor uses previous year papers available in the backend and uses Google Gemini to generate possible topics and questions based on the available paper data.
 
-### 📊 PYQ Analytics
+**Note:** The predicted paper is not guaranteed to be accurate. It is only based on the previous year papers available in the backend and should be used only as a preparation aid.
 
-- Analyze patterns across previous year papers
-- Identify frequently appearing topics
-- View subject-wise examination trends
-- Helps students understand important areas for preparation
-
-### 🤖 AI Paper Predictor
-
-- Uses previous year question papers available in the backend
-- Analyzes historical paper patterns
-- Generates predicted topics and possible questions
-- Helps students prioritize their preparation
-
-> ⚠️ **Disclaimer:** AI predictions are not guaranteed to appear in the actual examination. Predictions are generated based on patterns and information available in the previous year papers stored in the backend.
-
-### 📝 Notes Repository
-
-- Access academic notes through the platform
-- Organized according to available subjects and academic resources
-- Provides students with additional preparation material
-
-### 🎓 Scholarship Hub
-
-- Provides scholarship-related information
-- Displays scholarship opportunities and relevant details
-- Helps students discover financial assistance opportunities
-
-### 👤 Student Profile
-
-- Student registration and login
-- Secure authentication
-- Personalized student profile
-- Semester and branch information
-
----
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -71,10 +41,10 @@ The platform brings important academic resources together in one place, includin
 - Node.js
 - Express.js
 - Mongoose
-- JWT Authentication
+- JWT
 - bcryptjs
 
-### Database & Storage
+### Database and Storage
 
 - MongoDB Atlas
 - Cloudinary
@@ -85,43 +55,33 @@ The platform brings important academic resources together in one place, includin
 
 ### Deployment
 
-- Vercel — Frontend
-- Render — Backend
+- Vercel - Frontend
+- Render - Backend
 
----
-
-## 🏗️ System Architecture
+## Project Structure
 
 ```text
-                         ┌──────────────────┐
-                         │      Student     │
-                         └────────┬─────────┘
-                                  │
-                                  ▼
-                     ┌────────────────────────┐
-                     │    React + Vite        │
-                     │       Frontend         │
-                     │        Vercel          │
-                     └────────────┬───────────┘
-                                  │
-                             REST API
-                                  │
-                                  ▼
-                     ┌────────────────────────┐
-                     │    Node.js + Express   │
-                     │        Backend         │
-                     │         Render         │
-                     └──────────┬─────┬───────┘
-                                │     │
-                    ┌───────────┘     └────────────┐
-                    ▼                              ▼
-          ┌──────────────────┐           ┌──────────────────┐
-          │   MongoDB Atlas  │           │    Cloudinary    │
-          │  Application DB  │           │  File Storage    │
-          └──────────────────┘           └──────────────────┘
-                                │
-                                ▼
-                     ┌────────────────────────┐
-                     │    Google Gemini API   │
-                     │     AI Prediction      │
-                     └────────────────────────┘
+aktu-academic-copilot/
+│
+├── server/
+│   ├── config/             # Database and service configuration
+│   ├── controllers/        # Application logic
+│   ├── middleware/         # Authentication and error handling
+│   ├── models/             # Mongoose schemas
+│   ├── routes/             # API routes
+│   ├── scripts/            # Database scripts
+│   └── index.js            # Server entry point
+│
+└── client/
+    ├── src/
+    │   ├── components/     # Reusable components
+    │   ├── context/        # Authentication context
+    │   ├── layouts/        # Dashboard layouts
+    │   ├── pages/          # Application pages
+    │   ├── services/       # API integration
+    │   ├── index.css       # Global styles
+    │   └── App.jsx         # Main application and routing
+    │
+    ├── public/             # Static files
+    ├── index.html          # Main HTML file
+    └── vite.config.js      # Vite configuration

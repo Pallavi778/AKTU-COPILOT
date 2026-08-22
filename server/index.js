@@ -26,6 +26,8 @@ app.use(cors({
 // app.options('*', cors());
 // // Add this line right after to handle preflight:
 // app.options('*', cors());
+// app.use(cors(...)) must be registered before your routes (app.use('/api', apiRoutes)),
+//  so every request — including the preflight OPTIONS — passes through it first.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
