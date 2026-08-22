@@ -1,125 +1,127 @@
-# AKTU Academic Copilot
+# 🎓 AKTU Academic Copilot
 
-AKTU Academic Copilot is an AI-ready, full-stack academic assistant platform tailored for AKTU university engineering students. It consolidates Previous Year Papers (PYQs), chapter notes, scholarship updates, and university circulars, and features simulated viva examinations, predictive paper analytics, and algorithmic study planner timelines.
+AKTU Academic Copilot is a full-stack academic assistance platform designed specifically for students of Dr. A.P.J. Abdul Kalam Abdul Kalam Technical University (AKTU).
 
----
+The platform brings important academic resources together in one place, including Previous Year Question Papers (PYQs), PYQ analytics, notes, scholarships, student profiles, and an AI-powered paper predictor.
 
-## Folder Structure
+## 🌐 Live Demo
 
-```
-aktu-academic-copilot/
-├── server/                 # Express Backend Server
-│   ├── config/             # DB Connection Config
-│   ├── controllers/        # Route logic (Auth, PYQs, Notes, Mock AI, etc.)
-│   ├── middleware/         # Auth guarding
-│   ├── models/             # Mongoose schemas (User, Subject, PYQ, Notes, etc.)
-│   ├── routes/             # Route definitions
-│   ├── scripts/            # DB seed scripts
-│   ├── uploads/            # Organized static upload folders (pyqs/, notes/)
-│   └── index.js            # Server entry bootstrap
-└── client/                 # React Frontend Client (Vite + Tailwind CSS)
-    ├── src/
-    │   ├── components/     # Reusable layout guards and loaders
-    │   ├── context/        # User Authentication context state
-    │   ├── layouts/        # Responsive dashboard layout
-    │   ├── pages/          # All functional dashboard pages
-    │   ├── services/       # Axios API integration
-    │   ├── index.css       # Core Tailwind CSS imports & animations
-    │   └── App.jsx         # Router setup
-    ├── index.html          # Web entry markup
-    └── tailwind.config.js  # Color schemes & UI animations setup
-```
+🚀 **Live Project:** https://aktu-copilot.vercel.app
 
 ---
 
-## Technical Specifications & Features
+## ✨ Features
 
-### 1. Authentication Module
-- User records containing `name`, `email`, `password` (encrypted with `bcryptjs`), engineering `branch`, and active `semester`.
-- Secure protected endpoints using JWT authentication tokens stored in LocalStorage.
+### 📚 PYQ Repository
 
-### 2. Document Repositories (PYQ & Notes)
-- Organized static document directories (`uploads/pyqs/` and `uploads/notes/`).
-- Multer-based file upload pipelines accepting PDF documents.
-- Query filters supporting branch categorization, semesters, subject codes, and search keywords.
+- Browse Previous Year Question Papers
+- Filter papers based on semester, subject, branch, and year
+- Access organized question paper resources
+- Helps students prepare using previous examination patterns
 
-### 3. Analytics & Mock AI Services (No External API Keys Needed)
-- **AI Assistant**: Conversations focused on subject contexts, containing preset university queries and streaming message bubbles.
-- **PYQ Analytics**: High-fidelity subject statistics, topic recurrence graphs, and unit distributions utilizing responsive custom SVG graphics.
-- **Viva Prep**: Step-by-step testing terminals evaluating textual explanations, rendering inline technical grades, and producing scorecard summaries.
-- **Study Planner**: Generates check-off milestones, daily study timelines, and coverage checklists based on target exam dates and subjects.
-- **Scholarships & Notices**: Tracks announcement timelines, eligibility criteria, and remaining application countdowns.
+### 📊 PYQ Analytics
 
----
+- Analyze patterns across previous year papers
+- Identify frequently appearing topics
+- View subject-wise examination trends
+- Helps students understand important areas for preparation
 
-## Step-by-Step Installation & Run Guide
+### 🤖 AI Paper Predictor
 
-### Prerequisites
-- Node.js (v18.0.0 or higher)
-- MongoDB (Local instance running on `mongodb://127.0.0.1:27017` OR a MongoDB Atlas connection string)
+- Uses previous year question papers available in the backend
+- Analyzes historical paper patterns
+- Generates predicted topics and possible questions
+- Helps students prioritize their preparation
 
-### 1. Server Setup
-Navigate into the `server` directory, create a `.env` configuration file, install packages, and populate the database with seed data.
+> ⚠️ **Disclaimer:** AI predictions are not guaranteed to appear in the actual examination. Predictions are generated based on patterns and information available in the previous year papers stored in the backend.
 
-```bash
-cd server
-```
+### 📝 Notes Repository
 
-Create a `.env` file:
-```env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/aktu-copilot
-JWT_SECRET=aktu_copilot_super_secret_key
-```
+- Access academic notes through the platform
+- Organized according to available subjects and academic resources
+- Provides students with additional preparation material
 
-Install dependencies:
-```bash
-npm install
-```
+### 🎓 Scholarship Hub
 
-Seed the database (Populates standard engineering subjects, circulars, scholarships, papers, and writes static PDF placeholders):
-```bash
-npm run seed
-```
+- Provides scholarship-related information
+- Displays scholarship opportunities and relevant details
+- Helps students discover financial assistance opportunities
 
-Start the dev server:
-```bash
-npm run dev
-```
+### 👤 Student Profile
 
-The backend server will launch on `http://localhost:5000`.
-
-### 2. Client Setup
-Navigate into the `client` directory, install package dependencies, and start the Vite dev server.
-
-```bash
-cd ../client
-npm install
-npm run dev
-```
-
-The React dashboard application will hot-reload on `http://localhost:5173`. Open this URL in your web browser.
+- Student registration and login
+- Secure authentication
+- Personalized student profile
+- Semester and branch information
 
 ---
 
-## Key REST API Endpoints
+## 🛠️ Tech Stack
 
-| Method | Endpoint | Description | Protected |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/api/auth/register` | Register a new student | No |
-| **POST** | `/api/auth/login` | Student login | No |
-| **GET** | `/api/auth/profile` | Retrieve user profile details | **Yes** |
-| **PUT** | `/api/auth/profile` | Update profile information | **Yes** |
-| **GET** | `/api/subjects` | Fetch subjects list (supports branch/sem filters) | No |
-| **GET** | `/api/pyqs` | Fetch past examination papers list | No |
-| **POST** | `/api/pyqs` | Upload new exam PDF | **Yes** |
-| **GET** | `/api/notes` | Fetch notes catalog list | No |
-| **POST** | `/api/notes` | Upload new study notes PDF | **Yes** |
-| **GET** | `/api/scholarships` | Fetch available scholarship opportunities | No |
-| **GET** | `/api/notices` | Fetch university circulars feed | No |
-| **POST** | `/api/ai/chat` | Get contextual chatbot answers | **Yes** |
-| **GET** | `/api/ai/analytics/:code` | Get topic frequency and unit weightages | **Yes** |
-| **GET** | `/api/ai/predictions/:code` | Get predicted exam topics list | **Yes** |
-| **POST** | `/api/ai/viva/start` | Start mock viva examination | **Yes** |
-| **POST** | `/api/ai/viva/submit` | Grade viva response and retrieve next question | **Yes** |
-| **POST** | `/api/ai/planner` | Create study schedule checklist | **Yes** |
+### Frontend
+
+- React.js
+- Vite
+- Tailwind CSS
+- Axios
+- React Router
+
+### Backend
+
+- Node.js
+- Express.js
+- Mongoose
+- JWT Authentication
+- bcryptjs
+
+### Database & Storage
+
+- MongoDB Atlas
+- Cloudinary
+
+### AI
+
+- Google Gemini API
+
+### Deployment
+
+- Vercel — Frontend
+- Render — Backend
+
+---
+
+## 🏗️ System Architecture
+
+```text
+                         ┌──────────────────┐
+                         │      Student     │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                     ┌────────────────────────┐
+                     │    React + Vite        │
+                     │       Frontend         │
+                     │        Vercel          │
+                     └────────────┬───────────┘
+                                  │
+                             REST API
+                                  │
+                                  ▼
+                     ┌────────────────────────┐
+                     │    Node.js + Express   │
+                     │        Backend         │
+                     │         Render         │
+                     └──────────┬─────┬───────┘
+                                │     │
+                    ┌───────────┘     └────────────┐
+                    ▼                              ▼
+          ┌──────────────────┐           ┌──────────────────┐
+          │   MongoDB Atlas  │           │    Cloudinary    │
+          │  Application DB  │           │  File Storage    │
+          └──────────────────┘           └──────────────────┘
+                                │
+                                ▼
+                     ┌────────────────────────┐
+                     │    Google Gemini API   │
+                     │     AI Prediction      │
+                     └────────────────────────┘
